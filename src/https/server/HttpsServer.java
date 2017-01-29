@@ -9,6 +9,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.security.KeyStore;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
  
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
@@ -126,7 +128,16 @@ public class HttpsServer {
                 }
                  
                 // Write data
-                printWriter.print("HTTP/1.1 200\r\n");
+                printWriter.print("HTTP/1.1 200 OK\r\n");
+                printWriter.print("Server: Java HTTS Webserver\r\n");
+                printWriter.print("Date: " + java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now(ZoneId.of("GMT"))) + "\r\n");
+                printWriter.print("Content-Type: text/html\r\n");
+                
+                String htmlString = "<html>Hello World!</html>";
+                
+                printWriter.print("Content-Length: " + htmlString.getBytes().length + "\r\n");
+                printWriter.print("Connection: close\r\n");
+                printWriter.print(htmlString);
                 printWriter.flush();
                  
                 sslSocket.close();
