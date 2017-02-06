@@ -95,6 +95,30 @@ public class Handlers {
 		}
 	}
 
+	public static class ServicesHandler implements HttpHandler {
+
+		@Override
+		public void handle(HttpExchange he) throws IOException {              
+                        
+                        //test
+			InputStreamReader isr = new InputStreamReader(he.getRequestBody(), "utf-8");
+			BufferedReader br = new BufferedReader(isr);
+			String data = br.readLine();
+			System.out.println(data);
+                        
+			Headers headers = he.getRequestHeaders();
+                        String authCode = headers.get("Authorization").get(0);
+                        System.out.println(authCode);
+                        
+			String response = "OK";
+			he.sendResponseHeaders(200, response.length());
+			OutputStream os = he.getResponseBody();
+			os.write(response.toString().getBytes());
+			os.close();                  
+                                              
+                }   
+        }
+        
 	@SuppressWarnings("unchecked")
 	public static void parseQuery(String query, Map<String, Object> parameters) throws UnsupportedEncodingException {
 

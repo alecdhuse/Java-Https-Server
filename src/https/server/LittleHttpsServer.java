@@ -80,6 +80,7 @@ public class LittleHttpsServer {
 			server.createContext("/echoHeader", new Handlers.EchoHeaderHandler());
 			server.createContext("/echoGet", new Handlers.EchoGetHandler());
 			server.createContext("/echoPost", new Handlers.EchoPostHandler());
+                        server.createContext("/services/collector", new Handlers.ServicesHandler());
 			server.setExecutor(null);
 			server.start();
 		} catch (IOException e) {
