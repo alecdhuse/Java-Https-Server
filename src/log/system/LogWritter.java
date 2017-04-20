@@ -5,6 +5,7 @@
  */
 package log.system;
 
+import authentication.authentication;
 import java.util.ArrayList;
 
 /**
@@ -17,8 +18,12 @@ public class LogWritter extends Thread {
     public static boolean add_log_https(String authToken, String data) {
         boolean success = false;
         
-        //TODO: check auth
-        success = write_queue.add(data);
+        //check auth
+        if (authentication.validateToken(authToken)) {
+            success = write_queue.add(data);
+        } else {
+            success = false;
+        }
         
         return success;
     }

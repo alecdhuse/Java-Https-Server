@@ -21,6 +21,7 @@ import java.util.Set;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import log.system.LogWritter;
 
 public class Handlers {
 	public static class RootHandler implements HttpHandler {
@@ -101,17 +102,29 @@ public class Handlers {
 		public void handle(HttpExchange he) throws IOException {              
                         
                         //test
+                        String response;
+                        String[] authStringTokens;
+                        
 			InputStreamReader isr = new InputStreamReader(he.getRequestBody(), "utf-8");
 			BufferedReader br = new BufferedReader(isr);
+                        
+                        //Read in passed JSON data.
 			String data = br.readLine();
-			System.out.println(data);
                         
 			Headers headers = he.getRequestHeaders();
                         String authCode = headers.get("Authorization").get(0);
-                        System.out.println(authCode);
+                        authStringTokens = authCode.split("\\s+");
                         
-			String response = "OK";
-			he.sendResponseHeaders(200, response.length());
+                        boolean logSuccess = LogWritter.add_log_https(authStringTokens[1], data);
+                        
+                        if (logSuccess) {
+                            response = "OK";
+                            he.sendResponseHeaders(200, response.length());
+                        } else {
+                            response = "Unauthorized";
+                            he.sendResponseHeaders(401, response.length());
+                        }
+                        
 			OutputStream os = he.getResponseBody();
 			os.write(response.toString().getBytes());
 			os.close();                  
